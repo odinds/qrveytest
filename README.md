@@ -28,5 +28,8 @@ To get the project up and running you will need:
  
  ## PHOTOS
  - Coverage 1
- - Coverage 2
+ - Coverage 2´
+
+ ## SWAGGER DOC
+ - Path src/app/swagger/swagger.yaml
  
