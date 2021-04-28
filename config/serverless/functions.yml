@@ -8,6 +8,15 @@ postCreateUser:
         path: /users
         method: post
         cors: true
+getTaskByUser:
+  handler: src/app/controllers/user/get_resume_task_user.getTaskforUser
+  memorySize: 128
+  description: Create new user
+  events:
+    - http:
+        path: /user/resumeTask/{idUser}
+        method: get
+        cors: true        
 #Project functions         
 postCreateProject:
   handler: src/app/controllers/project/create.postProject
@@ -88,4 +97,4 @@ taskInProject:
         request:
           parameters:
             paths:
-            idTask: true            
+            idTask: true  
