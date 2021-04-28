@@ -1,0 +1,93 @@
+org: odinds
+app: api-sample-service-app
+service: api-sample-service
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: 'dev'
+  versionFunctions: false
+  region: us-east-2
+  stackName: temp-task-${opt:stage,'dev'}
+  deploymentBucket: 
+    name: temp-dev-deploy-files
+  apiGateway:
+    restApiId:
+      'Fn::ImportValue': 'REVIEW-TASK'
+    restApiRootResourceId:
+      'Fn::ImportValue': 'task-app-api-ParentID'
+
+  package:
+    excludeDevDependencies: true
+    exclude:
+      - .git/**
+      - .idea/**
+      - .dynamodb/**
+      - coverage/**
+      - .nyc-output/*
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "*"
+
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+        - lambda:InvokeAsync
+      Resource: "*"
+
+  environment:
+    ${file(./config/env/${self:provider.stage}.yml)}
+
+custom:
+  region: ${self:provider.region}
+  stage: ${opt:stage, self:provider.stage}
+  prefix: ${self:custom.stage}-${self:service}
+  process: ${self:custom.prefix}-process
+  config: ${self:custom.prefix}-config
+  dynamo-user: ${self:custom.prefix}-user
+  dynamo-task: ${self:custom.prefix}-task
+  dynamo-project: ${self:custom.prefix}-project
+
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    includeModules: true
+    packager: 'npm'
+    excludeFiles: spec/**/*.test.ts
+
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      migrate: true
+      convertEmptyValues: true
+      dbPath: './src/frameworks/persistence/dynamodb'
+
+  #customDomain:
+  #  domainName: 'localhost'
+    #domainName: ${file(./config/secret/${self:provider.stage}-secret-vars.json):CUSTOM_DOMAIN}
+    #certificateName: ${file(./config/secret/${self:provider.stage}-secret-vars.json):CUSTOM_DOMAIN}
+  #  basePath: ${self:provider.stage}
+  #  stage: ${self:provider.stage}
+  #  createRoute53Record: true
+  #  endpointType: 'regional'
+  #  securityPolicy: tls_1_2
+
+plugins:
+  - serverless-offline
+  - serverless-pseudo-parameters
+  - serverless-dynamodb-local
+  - serverless-webpack
+  #- serverless-domain-manager
+
+resources:
+  ${file(./config/serverless/resources.yml)}
+
+functions:
+  ${file(./config/serverless/functions.yml)}

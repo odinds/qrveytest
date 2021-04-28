@@ -1,0 +1,8 @@
+ENV: dev
+MESSAGE: 'Development environment'
+TABLE_USER: ${self:custom.dynamo-user}
+TABLE_TASK: ${self:custom.dynamo-task}
+TABLE_PROJECT: ${self:custom.dynamo-project}
+REGION: ${self:custom.region}
+DYNAMODB_SCAN_DEFAULT_SIZE: 10000
+PAGINATION_DEFAULT_SIZE: 20

@@ -1,0 +1,91 @@
+#User functions
+postCreateUser:
+  handler: src/app/controllers/user/create.postUser
+  memorySize: 128
+  description: Create new user
+  events:
+    - http:
+        path: /users
+        method: post
+        cors: true
+#Project functions         
+postCreateProject:
+  handler: src/app/controllers/project/create.postProject
+  memorySize: 128
+  description: Create new project
+  events:
+    - http:
+        path: project
+        method: post
+getListProject:
+  handler: src/app/controllers/project/read.getProjects
+  memorySize: 128
+  description: List all project
+  events:
+    - http:
+        path: projects
+        method: get
+getListProjectWithTask:
+  handler: src/app/controllers/project/read.getProjectsWithTask
+  memorySize: 128
+  description: List all project
+  events:
+    - http:
+        path: projectsWithTask
+        method: get                        
+#Task functions            
+getTasksByUser:
+  handler: src/app/controllers/task/read.getTasksByUser
+  memorySize: 128
+  description: Get task by user based on it`s id
+  events:
+    - http:
+        path: getTasksByUser/{idUser}
+        method: get
+        request:
+          parameters:
+            paths:
+            idUser: true             
+postCreateTask:
+  handler: src/app/controllers/task/create.postTask
+  memorySize: 128
+  description: Create new task
+  events:
+    - http:
+        path: tasks
+        method: post
+putPauseTask:
+  handler: src/app/controllers/task/update.putPauseTask
+  memorySize: 128
+  description: pause task
+  events:
+    - http:
+        path: tasks/pause/{idTask}
+        method: put
+        parameters:
+          paths:
+          idTask: true        
+restartTask:
+  handler: src/app/controllers/task/update.putRestartTask
+  memorySize: 128
+  description: restart task
+  events:
+    - http:
+        path: tasks/restart/{idTask}
+        method: put
+        request:
+          parameters:
+            paths:
+            idTask: true
+taskInProject:
+  handler: src/app/controllers/task/update.putTaskInProject
+  memorySize: 128
+  description: restart task
+  events:
+    - http:
+        path: tasks/belongProject/{idTask}
+        method: put
+        request:
+          parameters:
+            paths:
+            idTask: true            
